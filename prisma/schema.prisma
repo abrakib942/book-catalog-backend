@@ -15,7 +15,7 @@ model User {
   name             String
   email            String            @unique
   password         String
-  role             UserRoles
+  role             String
   contactNo        String
   address          String
   profileImg       String
@@ -63,8 +63,8 @@ model Order {
 }
 
 enum UserRoles {
-  ADMIN
-  CUSTOMER
+  admin
+  customer
 }
 
 enum OrderStatus {
