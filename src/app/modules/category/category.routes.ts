@@ -8,6 +8,6 @@ router.get('/', CategoryController.getAllCategories);
 router.get('/:id', CategoryController.getACategory);
 
 router.patch('/:id', CategoryController.updateCategory);
-router.delete('/:id');
+router.delete('/:id', CategoryController.deleteCategory);
 
 export const CategoryRoutes = router;
