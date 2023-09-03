@@ -121,10 +121,23 @@ const deleteBook = async (id: string): Promise<Book> => {
   return result;
 };
 
+const getBooksByCategoryId = async (categoryId: string) => {
+  const result = await prisma.book.findMany({
+    where: {
+      categoryId: categoryId,
+    },
+    include: {
+      category: true,
+    },
+  });
+  return result;
+};
+
 export const BookService = {
   createBook,
   getAllBooks,
   getABook,
   updateBook,
   deleteBook,
+  getBooksByCategoryId,
 };
