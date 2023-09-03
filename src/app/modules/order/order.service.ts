@@ -10,6 +10,16 @@ const createOrder = async (orderData: any): Promise<Order> => {
   return result;
 };
 
+const getAOrder = async (id: string) => {
+  const result = await prisma.order.findUnique({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
 export const OrderService = {
   createOrder,
+  getAOrder,
 };
