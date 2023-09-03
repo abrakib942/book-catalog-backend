@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IGenericErrorMessage } from '../interfaces/error';
 
-const handleCastError = (error: mongoose.Error.CastError) => {
+const handleCastError = (error: { path: any }) => {
   const errors: IGenericErrorMessage[] = [
     {
       path: error.path,

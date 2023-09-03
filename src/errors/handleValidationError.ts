@@ -1,12 +1,12 @@
-import mongoose from 'mongoose';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IGenericErrorResponse } from '../interfaces/common';
 import { IGenericErrorMessage } from '../interfaces/error';
 
-const handleValidationError = (
-  error: mongoose.Error.ValidationError
-): IGenericErrorResponse => {
+const handleValidationError = (error: {
+  errors: { [s: string]: unknown } | ArrayLike<unknown>;
+}): IGenericErrorResponse => {
   const errors: IGenericErrorMessage[] = Object.values(error.errors).map(
-    (el: mongoose.Error.ValidatorError | mongoose.Error.CastError) => {
+    (el: any) => {
       return {
         path: el?.path,
         message: el?.message,
