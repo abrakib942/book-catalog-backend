@@ -30,4 +30,4 @@
 
 - api/v1/orders/create-order (POST)
 - api/v1/orders (GET)
-- api/v1/orders/:orderId (GET)
+- api/v1/orders/6aab2d2c-c575-4c89-80bb-874face510f1 (GET)
