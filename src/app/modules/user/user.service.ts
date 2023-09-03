@@ -10,7 +10,12 @@ const signUp = (userData: User): Promise<User> => {
 };
 
 const getAllUsers = async () => {
-  const result = await prisma.user.findMany({});
+  const result = await prisma.user.findMany({
+    include: {
+      orders: true,
+      reviewAndRatings: true,
+    },
+  });
 
   return result;
 };
@@ -19,6 +24,10 @@ const getAUser = async (id: string): Promise<User | null> => {
   const result = await prisma.user.findUnique({
     where: {
       id,
+    },
+    include: {
+      orders: true,
+      reviewAndRatings: true,
     },
   });
   return result;
