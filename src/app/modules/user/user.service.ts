@@ -15,7 +15,17 @@ const getAllUsers = async () => {
   return result;
 };
 
+const getAUser = async (id: string): Promise<User | null> => {
+  const result = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+  return result;
+};
+
 export const UserService = {
   signUp,
   getAllUsers,
+  getAUser,
 };
