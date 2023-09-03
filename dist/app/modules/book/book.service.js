@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookService = void 0;
+const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const createBook = (bookData) => {
     const result = prisma_1.default.book.create({
@@ -23,13 +24,53 @@ const createBook = (bookData) => {
     });
     return result;
 };
-const getAllBooks = () => __awaiter(void 0, void 0, void 0, function* () {
+const getAllBooks = (filters, options) => __awaiter(void 0, void 0, void 0, function* () {
+    const searchableFields = ['title', 'author', 'genre'];
+    const { page, limit, skip } = paginationHelper_1.paginationHelpers.calculatePagination(options);
+    const { searchTerm, minPrice, maxPrice, category } = filters;
+    const andConditons = [];
+    if (searchTerm) {
+        andConditons.push({
+            OR: searchableFields.map(field => ({
+                [field]: {
+                    contains: searchTerm,
+                    mode: 'insensitive',
+                },
+            })),
+        });
+    }
+    const whereConditions = andConditons.length > 0 ? { AND: andConditons } : {};
+    if (minPrice) {
+        whereConditions.price = {
+            gte: parseFloat(minPrice),
+        };
+    }
+    if (maxPrice) {
+        if (!whereConditions.price) {
+            whereConditions.price = {};
+        }
+        whereConditions.price = { lte: parseFloat(maxPrice) };
+    }
+    if (category) {
+        whereConditions.categoryId = category;
+    }
     const result = yield prisma_1.default.book.findMany({
         include: {
             category: true,
         },
+        where: whereConditions,
+        skip,
+        take: limit,
     });
-    return result;
+    const total = yield prisma_1.default.book.count();
+    return {
+        meta: {
+            total,
+            page,
+            limit,
+        },
+        data: result,
+    };
 });
 const getABook = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield prisma_1.default.book.findUnique({
@@ -65,10 +106,22 @@ const deleteBook = (id) => __awaiter(void 0, void 0, void 0, function* () {
     });
     return result;
 });
+const getBooksByCategoryId = (categoryId) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield prisma_1.default.book.findMany({
+        where: {
+            categoryId: categoryId,
+        },
+        include: {
+            category: true,
+        },
+    });
+    return result;
+});
 exports.BookService = {
     createBook,
     getAllBooks,
     getABook,
     updateBook,
     deleteBook,
+    getBooksByCategoryId,
 };
